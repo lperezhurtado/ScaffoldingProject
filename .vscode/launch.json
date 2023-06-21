@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-ScaffoldingApplication<scaffolding>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.scaffolding.scaffolding.ScaffoldingApplication",
+            "projectName": "scaffolding",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
