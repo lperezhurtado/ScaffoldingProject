@@ -1,5 +1,7 @@
 package com.scaffolding.scaffolding.entities.beans;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginBean {
+public class NumberAccountBean {
     
-    private String dni;
-	private String password;
-	
+    private String account;
+    private LocalDateTime openingDate;
+    
 }

@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginBean {
+public class ResponseBean {
     
-    private String dni;
-	private String password;
-	
+    private NumberAccountBean numberAccount;
+    private String generatedPassword;
 }

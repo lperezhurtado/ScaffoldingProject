@@ -1,13 +1,17 @@
 package com.scaffolding.scaffolding.services;
 
-import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.scaffolding.scaffolding.entities.UserEntity;
+import com.scaffolding.scaffolding.entities.beans.NumberAccountBean;
+import com.scaffolding.scaffolding.entities.beans.ResponseBean;
 import com.scaffolding.scaffolding.entities.beans.UserBean;
 import com.scaffolding.scaffolding.exceptions.ValidationException;
+import com.scaffolding.scaffolding.helper.DateHelper;
 import com.scaffolding.scaffolding.helper.ValidationHelper;
 import com.scaffolding.scaffolding.repository.UserRepository;
 
@@ -18,6 +22,12 @@ public class UserService {
 
     @Autowired
     PasswordService passwordService;
+
+    @Autowired
+    AccountService accountService;
+
+    @Autowired
+    ResponseService responseService;
 
     public void validateID(Long id) {
         if (!userRepo.existsById(id)) {
@@ -33,14 +43,34 @@ public class UserService {
         ValidationHelper.isNumeric(Integer.toString(userEntity.getPostalCode()));
     }
 
-    @Transactional
-    public String createUser(UserBean newUser) {
+    public UserEntity getUser(Long idUser) {
+        validateID(idUser);
+        return userRepo.findById(idUser).get();
+    }
 
+
+    // @Transactional
+    // public String createUser(UserBean newUser) {
+
+    //     validate(newUser);
+    //     checkIfDniExist(newUser.getDni());
+    //     Long id = userRepo.save(userBeanToEntity(newUser)).getUid();
+
+    //     return passwordService.saveIdUserWithPassword(id);
+    // }
+
+
+    @Transactional
+    public ResponseBean createUser(UserBean newUser) {
         validate(newUser);
         checkIfDniExist(newUser.getDni());
         Long id = userRepo.save(userBeanToEntity(newUser)).getUid();
+        LocalDateTime now = DateHelper.getActualDateTime();
 
-        return passwordService.saveIdUserWithPassword(id);
+        String generatedAccountNumber = accountService.getGeneratedAccountFromAccountServer(id, now);
+        NumberAccountBean numberAccount = accountService.setNumberAccount(generatedAccountNumber, now);
+        
+        return responseService.setResponse(numberAccount, passwordService.saveIdUserWithPassword(id));
     }
 
     @Transactional
@@ -54,6 +84,8 @@ public class UserService {
     public String updateUser(UserBean updateUser) {
         validateID(updateUser.getUid());
         validate(updateUser);
+        checkIfIsSameDNI(updateUser);
+
         UserEntity updatedUser = userRepo.getReferenceById(updateUser.getUid());
         updatedUser = userBeanToEntity(updateUser);
         updatedUser.setUid(updateUser.getUid());
@@ -61,9 +93,7 @@ public class UserService {
         return "Se ha actualizado la información";
     }
 
-    
-
-    public UserEntity userBeanToEntity(UserBean userBean) {
+    private UserEntity userBeanToEntity(UserBean userBean) {
         UserEntity user = new UserEntity();
         user.setName(userBean.getName());
         user.setLastName(userBean.getLastName());
@@ -76,7 +106,17 @@ public class UserService {
         return user;
     }
 
-    public boolean checkIfDniExist(String dni) {
+    private void checkIfIsSameDNI(UserBean user) {
+        UserEntity actualUser = userRepo.findById(user.getUid()).get();
+        if (userRepo.existsByDni(user.getDni()) && !actualUser.getDni().equals(user.getDni())) {
+            throw new ValidationException("Dni ya existente");
+        }
+    }
+
+    private boolean checkIfDniExist(String dni) {
+        if (userRepo.existsByDni(dni)) {
+            throw new ValidationException("Dni ya existente");
+        }
         return userRepo.existsByDni(dni);
     }
 
@@ -86,5 +126,4 @@ public class UserService {
         }
         return userRepo.findByDni(dni);
     }
-
 }
