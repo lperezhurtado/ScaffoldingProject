@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.scaffolding.scaffolding.entities.UserEntity;
-import com.scaffolding.scaffolding.entities.beans.ResponseBean;
+import com.scaffolding.scaffolding.entities.beans.CreatedUserAccountBean;
 import com.scaffolding.scaffolding.entities.beans.UserBean;
+import com.scaffolding.scaffolding.entities.beans.UserWithAccountBean;
 import com.scaffolding.scaffolding.services.UserService;
 
 @RestController
@@ -25,8 +25,8 @@ public class UserController {
     UserService userService;
 
      @GetMapping("/{id}")
-    public ResponseEntity<UserEntity> getUser(@PathVariable(value = "id") Long idUser) {
-        return new ResponseEntity<UserEntity>(userService.getUser(idUser), HttpStatus.OK);
+    public ResponseEntity<UserWithAccountBean> getUser(@PathVariable(value = "id") Long idUser) {
+        return new ResponseEntity<UserWithAccountBean>(userService.getUser(idUser), HttpStatus.OK);
     }
 
     // @PostMapping("/create")
@@ -35,8 +35,8 @@ public class UserController {
     // }
 
     @PostMapping("/create")
-    public ResponseEntity<ResponseBean> create(@RequestBody UserBean newUser) {
-        return new ResponseEntity<ResponseBean>(userService.createUser(newUser), HttpStatus.OK);
+    public ResponseEntity<CreatedUserAccountBean> create(@RequestBody UserBean newUser) {
+        return new ResponseEntity<CreatedUserAccountBean>(userService.createUser(newUser), HttpStatus.OK);
     }
 
     @DeleteMapping("delete/{id}")

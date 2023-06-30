@@ -8,8 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.scaffolding.scaffolding.entities.UserEntity;
 import com.scaffolding.scaffolding.entities.beans.NumberAccountBean;
-import com.scaffolding.scaffolding.entities.beans.ResponseBean;
+import com.scaffolding.scaffolding.entities.beans.CreatedUserAccountBean;
 import com.scaffolding.scaffolding.entities.beans.UserBean;
+import com.scaffolding.scaffolding.entities.beans.UserWithAccountBean;
 import com.scaffolding.scaffolding.exceptions.ValidationException;
 import com.scaffolding.scaffolding.helper.DateHelper;
 import com.scaffolding.scaffolding.helper.ValidationHelper;
@@ -43,9 +44,9 @@ public class UserService {
         ValidationHelper.isNumeric(Integer.toString(userEntity.getPostalCode()));
     }
 
-    public UserEntity getUser(Long idUser) {
+    public UserWithAccountBean getUser(Long idUser) {
         validateID(idUser);
-        return userRepo.findById(idUser).get();
+        return responseService.getUserWithAccountBean(userRepo.findById(idUser).get()); 
     }
 
 
@@ -61,13 +62,13 @@ public class UserService {
 
 
     @Transactional
-    public ResponseBean createUser(UserBean newUser) {
+    public CreatedUserAccountBean createUser(UserBean newUser) {
         validate(newUser);
         checkIfDniExist(newUser.getDni());
         Long id = userRepo.save(userBeanToEntity(newUser)).getUid();
         LocalDateTime now = DateHelper.getActualDateTime();
 
-        String generatedAccountNumber = accountService.getGeneratedAccountFromAccountServer(id, now);
+        String generatedAccountNumber = accountService.createAccountFromAccountServer(id, now);
         NumberAccountBean numberAccount = accountService.setNumberAccount(generatedAccountNumber, now);
         
         return responseService.setResponse(numberAccount, passwordService.saveIdUserWithPassword(id));
@@ -78,7 +79,8 @@ public class UserService {
         validateID(id);
         userRepo.deleteById(id);
         passwordService.deletepassword(id);
-        return "Se ha eliminado el usuario con id "+id;
+        
+        return "Se ha eliminado el usuario con id "+id +"\n"+ accountService.deleteAccountFromAccountServer(id);
     }
 
     public String updateUser(UserBean updateUser) {

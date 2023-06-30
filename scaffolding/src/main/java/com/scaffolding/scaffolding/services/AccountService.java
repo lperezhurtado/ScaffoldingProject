@@ -22,14 +22,25 @@ public class AccountService {
     private final double COMISSION = .4;
 
     public AccountBean getAccount(Long userId) {
-     
         ResponseEntity<AccountBean> responseEntity = restTemplate
                                                     .getForEntity("http://localhost:8083/account/" + userId, AccountBean.class);
-
-        System.out.println(responseEntity.getBody());
       
         return responseEntity.getBody();
     }
+
+    public String createAccountFromAccountServer(Long idUser, LocalDateTime now) {
+        Map<String, String> map = getAccountMapped(idUser, now);
+        ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:8083/account/create", map, String.class);
+        //ResponseEntity<String> response = restTemplate.exchange("http://localhost:8083/account/create", HttpMethod.POST, map, String.class);
+        return response.getBody();
+    }
+
+    public String deleteAccountFromAccountServer(Long idUser) {
+        restTemplate.delete("http://localhost:8083/account/delete/{idUser}", idUser);
+        return "Cuenta del usuario con ID "+idUser+" eliminada";
+    }
+
+
 
     public AccountBean setAccountBean (LocalDateTime now, Long idUser) {
         return new AccountBean(now, INTERESTS, COMISSION, idUser);
@@ -44,13 +55,6 @@ public class AccountService {
         map.put("idUser", Long.toString(idUser));
         
         return map;
-    }
-
-    public String getGeneratedAccountFromAccountServer(Long idUser, LocalDateTime now) {
-        Map<String, String> map = getAccountMapped(idUser, now);
-        ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:8083/account/create", map, String.class);
-        //ResponseEntity<String> response = restTemplate.exchange("http://localhost:8083/account/create", HttpMethod.POST, map, String.class);
-        return response.getBody();
     }
 
     public NumberAccountBean setNumberAccount(String response, LocalDateTime now) {

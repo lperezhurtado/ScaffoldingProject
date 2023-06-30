@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseBean {
+public class CreatedUserAccountBean {
     
     private NumberAccountBean numberAccount;
     private String generatedPassword;
