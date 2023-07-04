@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NumberAccountBean {
+public class IbanNumberBean {
     
-    private String account;
+    private String iban;
     private LocalDateTime openingDate;
     
 }

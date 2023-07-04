@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.scaffolding.scaffolding.entities.UserEntity;
-import com.scaffolding.scaffolding.entities.beans.NumberAccountBean;
+import com.scaffolding.scaffolding.entities.beans.IbanNumberBean;
 import com.scaffolding.scaffolding.entities.beans.CreatedUserAccountBean;
 import com.scaffolding.scaffolding.entities.beans.UserBean;
 import com.scaffolding.scaffolding.entities.beans.UserWithAccountBean;
@@ -65,13 +65,13 @@ public class UserService {
     public CreatedUserAccountBean createUser(UserBean newUser) {
         validate(newUser);
         checkIfDniExist(newUser.getDni());
-        Long id = userRepo.save(userBeanToEntity(newUser)).getUid();
+        Long idUser = userRepo.save(userBeanToEntity(newUser)).getUid();
         LocalDateTime now = DateHelper.getActualDateTime();
 
-        String generatedAccountNumber = accountService.createAccountFromAccountServer(id, now);
-        NumberAccountBean numberAccount = accountService.setNumberAccount(generatedAccountNumber, now);
+        String generatedIbanNumber = accountService.createAccountFromAccountServer(idUser, now);
+        IbanNumberBean iban = accountService.setIbanNumber(generatedIbanNumber, now);
         
-        return responseService.setResponse(numberAccount, passwordService.saveIdUserWithPassword(id));
+        return responseService.setResponse(iban, passwordService.saveIdUserWithPassword(idUser));
     }
 
     @Transactional

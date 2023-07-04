@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.scaffolding.scaffolding.entities.beans.AccountBean;
-import com.scaffolding.scaffolding.entities.beans.NumberAccountBean;
+import com.scaffolding.scaffolding.entities.beans.IbanNumberBean;
 
 @Service
 public class AccountService {
@@ -57,7 +57,7 @@ public class AccountService {
         return map;
     }
 
-    public NumberAccountBean setNumberAccount(String response, LocalDateTime now) {
-        return new NumberAccountBean(response, now);
+    public IbanNumberBean setIbanNumber(String response, LocalDateTime now) {
+        return new IbanNumberBean(response, now);
     }
 }

@@ -3,7 +3,7 @@ package com.scaffolding.scaffolding.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.scaffolding.scaffolding.entities.beans.NumberAccountBean;
+import com.scaffolding.scaffolding.entities.beans.IbanNumberBean;
 import com.scaffolding.scaffolding.entities.beans.UserWithAccountBean;
 import com.scaffolding.scaffolding.entities.UserEntity;
 import com.scaffolding.scaffolding.entities.beans.CreatedUserAccountBean;
@@ -14,8 +14,8 @@ public class ResponseService {
     @Autowired
     AccountService accountService;
 
-    public CreatedUserAccountBean setResponse(NumberAccountBean numberAccount, String password) {
-        return new CreatedUserAccountBean(numberAccount, password);
+    public CreatedUserAccountBean setResponse(IbanNumberBean ibanNumber, String password) {
+        return new CreatedUserAccountBean(ibanNumber, password);
     }
 
     public UserWithAccountBean getUserWithAccountBean(UserEntity user) {

@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreatedUserAccountBean {
     
-    private NumberAccountBean numberAccount;
+    private IbanNumberBean iban;
     private String generatedPassword;
 }
